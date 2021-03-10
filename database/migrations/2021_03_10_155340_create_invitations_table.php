@@ -14,14 +14,14 @@ class CreateInvitationsTable extends Migration
     public function up()
     {
         Schema::create('invitations', function (Blueprint $table) {
-            $table->id('invitation_id');
+            $table->id();
             $table->enum('email_sent', ['no', 'yes'])->default('no');
             $table->foreignId('event_id');
             $table->foreignId('user_id');
             $table->foreignId('created_by');
-            $table->foreign('event_id')->references('event_id')->on('events')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('created_by')->references('user_id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
