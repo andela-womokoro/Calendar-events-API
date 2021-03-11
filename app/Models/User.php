@@ -17,9 +17,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
+        'username',
         'password',
+        'first_name',
+        'last_name',
+        'email',
     ];
 
     /**
@@ -29,15 +31,13 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
+     * Get the invitations for this user.
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function invitation()
+    {
+        return $this->hasMany(Invitation::class);
+    }
 }
