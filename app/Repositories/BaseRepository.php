@@ -4,9 +4,9 @@ namespace App\Repositories;
 
 abstract class BaseRepository
 {
-    abstract function fetchMany($begin, $perPage, $sortBy, $sortDirection);
-
     abstract function create($data);
+
+    abstract function fetchMany($begin, $perPage, $sortBy, $sortDirection);
 
     abstract function fetchOne($id);
 

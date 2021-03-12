@@ -4,15 +4,11 @@ namespace App\Repositories;
 
 use Exception;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository extends BaseRepository
 {
-	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
-	{
-		//
-	}
-
 	/**
      * Create a user
      *
@@ -38,6 +34,35 @@ class UserRepository extends BaseRepository
 		} catch (Exception $e) {
             return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
         }     
+	}
+
+	/**
+	 * Login a user
+	 * 
+	 * @param  array $data
+	 * @return JSON
+	 */
+	public function login($data)
+	{
+		$user = User::where("email", $data["email"])->first();
+
+		if(is_null($user)) {
+			return formatResponse(404, 'User with email '. $data["email"] .' does not exist.');
+		}
+
+		if(Auth::attempt(['email' => $data["email"], 'password' => $data["password"]])){
+			$user = Auth::user();
+			$token = $user->createToken('foo')->plainTextToken;
+
+			return formatResponse(200, 'Login successful', true, ['token' => $token]);
+		} else {
+			return formatResponse(200, 'Invalid password');
+		}
+	}
+
+	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
+	{
+		//
 	}
 
 	public function fetchOne($id)

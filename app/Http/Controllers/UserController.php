@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Validator;
@@ -12,18 +11,18 @@ class UserController extends Controller
 {
 	protected $userRepository;
 
-    /**
-     * Constructor
-     */
-    public function __construct(UserRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct(UserRepository $userRepository)
+	{
+		$this->userRepository = $userRepository;
+	}
 
 	/**
 	 * Register a user
 	 * 
-	 * @return [type]
+	 * @return \Illuminate\Http\Response
 	 */
 	public function register(Request $request)
 	{
@@ -43,24 +42,38 @@ class UserController extends Controller
 		$inputs["password"] = Hash::make($request->password);
 
 		$data = [
-            "username" => $inputs["username"],
-            "password" => $inputs["password"],
-            "first_name" => $inputs["first_name"],
-            "last_name" => $inputs["last_name"],
-            "email" => $inputs["email"],
-        ];
+			"username" => $inputs["username"],
+			"password" => $inputs["password"],
+			"first_name" => $inputs["first_name"],
+			"last_name" => $inputs["last_name"],
+			"email" => $inputs["email"],
+		];
 
-        return $this->userRepository->create($data);
+		return $this->userRepository->create($data);
 	}
 
 	/**
 	 * Login a user
 	 * 
-	 * @return [type]
+	 * @return \Illuminate\Http\Response
 	 */
-	public function login()
+	public function login(Request $request)
 	{
-		//
+		$validator = Validator::make($request->all(), [
+			"email" =>  "required|email",
+			"password" =>  "required",
+		]);
+
+		if($validator->fails()) {
+			return formatResponse(400, $validator->errors());
+		}
+
+		$data = [
+			"email" => $request->email,
+			"password" => $request->password,
+		];
+
+		return $this->userRepository->login($data);
 	}
 
 	/**
