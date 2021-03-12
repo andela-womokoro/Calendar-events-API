@@ -37,26 +37,47 @@ class UserRepository extends BaseRepository
 	}
 
 	/**
-	 * Login a user
+	 * Authenticate user and generate access token
 	 * 
 	 * @param  array $data
 	 * @return JSON
 	 */
 	public function login($data)
 	{
-		$user = User::where("email", $data["email"])->first();
+		try {
+			$user = User::where("email", $data["email"])->first();
 
-		if(is_null($user)) {
-			return formatResponse(404, 'User with email '. $data["email"] .' does not exist.');
-		}
+			if(is_null($user)) {
+				throw new ModelNotFoundException('User with email '. $data["email"] .' does not exist.');
+			}
 
-		if(Auth::attempt(['email' => $data["email"], 'password' => $data["password"]])){
-			$user = Auth::user();
-			$token = $user->createToken('foo')->plainTextToken;
+			if(Auth::attempt(['email' => $data["email"], 'password' => $data["password"]])){
+				$user = Auth::user();
+				$token = $user->createToken('token')->plainTextToken;
 
-			return formatResponse(200, 'Login successful', true, ['token' => $token]);
-		} else {
-			return formatResponse(200, 'Invalid password');
+				return formatResponse(200, 'Login successful', true, ['token' => $token]);
+			} else {
+				return formatResponse(200, 'Invalid password');
+			}
+		} catch (ModelNotFoundException $mnfe) {
+            return formatResponse(404, $mnfe->getMessage());
+        } catch (Exception $e) {
+            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+        }
+	}
+
+	/**
+	 * Revovke a user's access token(s)
+	 * 
+	 * @return JSON
+	 */
+	public function logout()
+	{
+		try {
+			auth()->user()->tokens()->delete();
+			return formatResponse(200, 'Token(s) invalidated', true);
+		} catch(Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
 		}
 	}
 
