@@ -3,25 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\EventRepository;
+use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
+    protected $eventRepository;
+
+    /**
+     * Constructor
+     */
+    public function __construct(EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -34,7 +36,27 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator  =   Validator::make($request->all(), [
+            "description"  =>  "required",
+            "date"  =>  "required|date_format:Y-m-d",
+            "time"  =>  "required||date_format:H:i:s",
+            "location"  =>  "required",
+        ]);
+
+        if($validator->fails()) {
+            return formatResponse(400, $validator->errors());
+        }
+
+        $inputs = $request->all();
+
+        $data = [
+            "description" => $inputs["description"],
+            "date" => $inputs["date"],
+            "time" => $inputs["time"],
+            "location" => $inputs["location"],
+        ];
+
+        return $this->eventRepository->create($data);
     }
 
     /**
@@ -44,17 +66,6 @@ class EventController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
     {
         //
     }

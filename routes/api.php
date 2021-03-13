@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,5 +28,6 @@ Route::group(['middleware' => 'api'], function () {
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/logout', [UserController::class, 'logout']);
+	Route::post('/events', [EventController::class, 'store']);
 });
    

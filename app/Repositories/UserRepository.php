@@ -37,7 +37,7 @@ class UserRepository extends BaseRepository
 	}
 
 	/**
-	 * Authenticate user and generate access token
+	 * Authenticate a user and generate an access token
 	 * 
 	 * @param  array $data
 	 * @return JSON
@@ -75,6 +75,7 @@ class UserRepository extends BaseRepository
 	{
 		try {
 			auth()->user()->tokens()->delete();
+
 			return formatResponse(200, 'Token(s) invalidated', true);
 		} catch(Exception $e) {
 			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());

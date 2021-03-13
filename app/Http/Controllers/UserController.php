@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class UserController extends Controller
 {
