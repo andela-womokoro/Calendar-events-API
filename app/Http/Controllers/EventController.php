@@ -83,7 +83,40 @@ class EventController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		//
+		$validator  =   Validator::make($request->all(), [
+			"description"  =>  "filled",
+			"date"  =>  "filled|date_format:Y-m-d",
+			"time"  =>  "filled||date_format:H:i:s",
+			"location"  =>  "filled",
+		]);
+
+		if($validator->fails()) {
+			return formatResponse(400, $validator->errors());
+		}
+
+		$data = [];
+
+		if ($request->has('description')) {
+            $data['description'] = $request->description;
+        }
+
+        if ($request->has('date')) {
+            $data['date'] = $request->date;
+        }
+
+        if ($request->has('time')) {
+            $data['time'] = $request->time;
+        }
+
+        if ($request->has('location')) {
+            $data['location'] = $request->location;
+        }
+
+		if (is_numeric($id)) {
+            return $this->eventRepository->update($data, $id);
+        }
+
+        return formatResponse(400, 'Bad Request');
 	}
 
 	/**

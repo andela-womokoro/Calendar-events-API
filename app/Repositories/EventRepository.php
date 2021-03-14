@@ -37,32 +37,62 @@ class EventRepository extends BaseRepository
 	public function fetchOne($id)
 	{
 		try {
-            $event = Event::findOrFail($id);
+			$event = Event::findOrFail($id);
 
-            return formatResponse(200, 'Ok', true, $event);
-        } catch (ModelNotFoundException $mnfe) {
-            return formatResponse(404, 'Event not found');
-        } catch (Exception $e) {
-            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
-        }
+			return formatResponse(200, 'Ok', true, $event);
+		} catch (ModelNotFoundException $mnfe) {
+			return formatResponse(404, 'Event not found');
+		} catch (Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}
 	}
 
 	public function update($data, $id)
 	{
-		//
+		try {
+			$event = Event::findOrFail($id);
+
+			if (isset($data['description'])) {
+				$event->description = $data['description'];
+			}
+
+			if (isset($data['date'])) {
+				$event->date = $data['date'];
+			}
+
+			if (isset($data['time'])) {
+				$event->time = $data['time'];
+			}
+
+			if (isset($data['location'])) {
+				$event->location = $data['location'];
+			}
+
+			if ($event->isDirty()) {
+				$event->save();
+
+				return formatResponse(200, 'Event updated', true, $event);
+			}
+
+			return formatResponse(200, 'No changes made. No update required.', true, $event);
+		} catch (ModelNotFoundException $mnfe) {
+			return formatResponse(404, 'Event not found');
+		} catch (Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}
 	}
 
 	public function delete($id)
 	{
 		try {
-            $event = Event::findOrFail($id);
-            $event->delete();
+			$event = Event::findOrFail($id);
+			$event->delete();
 
-            return formatResponse(200, 'Event deleted', true, []);
-        } catch (ModelNotFoundException $mnfe) {
-            return formatResponse(404, 'Event not found');
-        } catch (Exception $e) {
-            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
-        }
+			return formatResponse(200, 'Event deleted', true, []);
+		} catch (ModelNotFoundException $mnfe) {
+			return formatResponse(404, 'Event not found');
+		} catch (Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}
 	}
 }
