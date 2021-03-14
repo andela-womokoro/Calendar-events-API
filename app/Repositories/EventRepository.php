@@ -13,10 +13,10 @@ class EventRepository extends BaseRepository
 		try {
 			$event = Event::create([
 				"description" => $data["description"],
-	            "date" => $data["date"],
-	            "time" => $data["time"],
-	            "location" => $data["location"],
-	            "created_by" => auth()->user()->id,
+				"date" => $data["date"],
+				"time" => $data["time"],
+				"location" => $data["location"],
+				"created_by" => auth()->user()->id,
 			]);
 
 			if (is_null($event)) {
@@ -25,8 +25,8 @@ class EventRepository extends BaseRepository
 
 			return formatResponse(201, 'Event created', true, $event);
 		} catch (Exception $e) {
-            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
-        }     
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}     
 	}
 
 	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
@@ -36,7 +36,15 @@ class EventRepository extends BaseRepository
 
 	public function fetchOne($id)
 	{
-		//
+		try {
+            $event = Event::findOrFail($id);
+
+            return formatResponse(200, 'Ok', true, $event);
+        } catch (ModelNotFoundException $mnfe) {
+            return formatResponse(404, 'Event not found');
+        } catch (Exception $e) {
+            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+        }
 	}
 
 	public function update($data, $id)
@@ -46,6 +54,15 @@ class EventRepository extends BaseRepository
 
 	public function delete($id)
 	{
-		//
+		try {
+            $event = Event::findOrFail($id);
+            $event->delete();
+
+            return formatResponse(200, 'Event deleted', true, []);
+        } catch (ModelNotFoundException $mnfe) {
+            return formatResponse(404, 'Event not found');
+        } catch (Exception $e) {
+            return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+        }
 	}
 }

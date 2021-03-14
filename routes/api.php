@@ -29,5 +29,7 @@ Route::group(['middleware' => 'api'], function () {
 Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/logout', [UserController::class, 'logout']);
 	Route::post('/events', [EventController::class, 'store']);
+	Route::get('/events/{eventId}', [EventController::class, 'show']);
+	Route::delete('/events/{id}', [EventController::class, 'destroy']);
 });
    
