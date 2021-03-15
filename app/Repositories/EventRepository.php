@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventRepository extends BaseRepository
 {
+	/**
+	 * Create an event
+	 * 
+	 * @param  array $data
+	 * @return json
+	 */
 	public function create($data)
 	{
 		try {
@@ -29,11 +35,64 @@ class EventRepository extends BaseRepository
 		}     
 	}
 
-	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
+	/**
+	 * Fetch a list of events
+	 * 
+	 * @param  int $begin
+	 * @param  int $perPage
+	 * @param  string $sortBy
+	 * @param  string $sortDirection
+	 * @return json
+	 */
+	public function fetchMany($begin, $perPage, $sortBy, $sortDirection, $fromDate = null, $toDate = null)
 	{
-		//
+		try {
+			$event = null;
+
+			if (!is_null($fromDate) && !is_null($toDate)) {
+				$event = Event::where('date', '>=', $fromDate)
+								->where('date', '<=', $toDate)
+								->orderBy($sortBy, $sortDirection)
+								->offset($begin)
+								->limit($perPage)
+								->paginate($perPage)
+								->withQueryString();
+			} else {
+				$event = Event::orderBy($sortBy, $sortDirection)
+								->offset($begin)
+								->limit($perPage)
+								->paginate($perPage)
+								->withQueryString();
+			}
+
+			$event = json_decode(json_encode($event));
+			
+			$payload = [
+				"total" => $event->total,
+				"per_page" => $event->per_page,
+				"current_page" => $event->current_page,
+				"last_page" => $event->last_page,
+				"first_page_url" => $event->first_page_url,
+				"last_page_url" => $event->last_page_url,
+				"next_page_url" => $event->next_page_url,
+				"prev_page_url" => $event->prev_page_url,
+				"from" => $event->from,
+				"to" => $event->to,
+				"data" => $event->data,
+			];
+
+			return formatResponse(200, 'Ok', true, $payload);
+		} catch (Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}
 	}
 
+	/**
+	 * Fetch a single event
+	 * 
+	 * @param  int $id
+	 * @return json
+	 */
 	public function fetchOne($id)
 	{
 		try {
@@ -47,6 +106,13 @@ class EventRepository extends BaseRepository
 		}
 	}
 
+	/**
+	 * Update an event's attributes
+	 * 
+	 * @param  array $data
+	 * @param  int $id
+	 * @return json
+	 */
 	public function update($data, $id)
 	{
 		try {
@@ -82,6 +148,12 @@ class EventRepository extends BaseRepository
 		}
 	}
 
+	/**
+	 * Delete an event
+	 * 
+	 * @param  int $id
+	 * @return json
+	 */
 	public function delete($id)
 	{
 		try {
