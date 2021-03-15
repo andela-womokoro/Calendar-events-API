@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use Exception;
 use App\Models\Event;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventRepository extends BaseRepository
@@ -42,15 +43,17 @@ class EventRepository extends BaseRepository
 	 * @param  int $perPage
 	 * @param  string $sortBy
 	 * @param  string $sortDirection
+	 * @param  string $fromDate
+	 * @param  string $toDate
 	 * @return json
 	 */
 	public function fetchMany($begin, $perPage, $sortBy, $sortDirection, $fromDate = null, $toDate = null)
 	{
 		try {
-			$event = null;
+			$events = null;
 
 			if (!is_null($fromDate) && !is_null($toDate)) {
-				$event = Event::where('date', '>=', $fromDate)
+				$events = Event::where('date', '>=', $fromDate)
 								->where('date', '<=', $toDate)
 								->orderBy($sortBy, $sortDirection)
 								->offset($begin)
@@ -58,33 +61,65 @@ class EventRepository extends BaseRepository
 								->paginate($perPage)
 								->withQueryString();
 			} else {
-				$event = Event::orderBy($sortBy, $sortDirection)
+				$events = Event::orderBy($sortBy, $sortDirection)
 								->offset($begin)
 								->limit($perPage)
 								->paginate($perPage)
 								->withQueryString();
 			}
 
-			$event = json_decode(json_encode($event));
+			$events = json_decode(json_encode($events));
+			$eventsWithWeather = [];
+
+			foreach($events->data as $event) {
+				$event = (array) $event;
+				array_push($eventsWithWeather, $this->appendWeatherData($event));
+			}
 			
 			$payload = [
-				"total" => $event->total,
-				"per_page" => $event->per_page,
-				"current_page" => $event->current_page,
-				"last_page" => $event->last_page,
-				"first_page_url" => $event->first_page_url,
-				"last_page_url" => $event->last_page_url,
-				"next_page_url" => $event->next_page_url,
-				"prev_page_url" => $event->prev_page_url,
-				"from" => $event->from,
-				"to" => $event->to,
-				"data" => $event->data,
+				"total" => $events->total,
+				"per_page" => $events->per_page,
+				"current_page" => $events->current_page,
+				"last_page" => $events->last_page,
+				"first_page_url" => $events->first_page_url,
+				"last_page_url" => $events->last_page_url,
+				"next_page_url" => $events->next_page_url,
+				"prev_page_url" => $events->prev_page_url,
+				"from" => $events->from,
+				"to" => $events->to,
+				"payload" => $eventsWithWeather,
 			];
 
 			return formatResponse(200, 'Ok', true, $payload);
 		} catch (Exception $e) {
 			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
 		}
+	}
+
+	/**
+	 * Add weather data to an event
+	 * 
+	 * @param  array $event
+	 * @return array
+	 */
+	private function appendWeatherData($event)
+	{
+		$weatherApiResponse = Http::get("api.openweathermap.org/data/2.5/weather", [
+		    "q" => $event["location"],
+		    "appid" => "e0cb20654a35a92900ef7feadc978184",
+		    "units" => "metric",
+		]);
+
+		if ($weatherApiResponse->ok()) {
+			$jsonData = $weatherApiResponse->json();
+			$event['weather'] = [
+				"description" => $jsonData["weather"][0]["description"],
+				"temperature" => $jsonData["main"]["temp"],
+				"humidity" => $jsonData["main"]["humidity"],
+			];
+		}
+
+		return $event;
 	}
 
 	/**
@@ -97,8 +132,8 @@ class EventRepository extends BaseRepository
 	{
 		try {
 			$event = Event::findOrFail($id);
-
-			return formatResponse(200, 'Ok', true, $event);
+		
+			return formatResponse(200, 'Ok', true, $this->appendWeatherData($event));
 		} catch (ModelNotFoundException $mnfe) {
 			return formatResponse(404, 'Event not found');
 		} catch (Exception $e) {
