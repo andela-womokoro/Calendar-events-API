@@ -202,4 +202,33 @@ class EventRepository extends BaseRepository
 			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
 		}
 	}
+
+	/**
+	 * fetch locations for events with weather for a time interval
+	 * 
+	 * @param  array $data
+	 * @return json
+	 */
+	public function fetchLocations($data)
+	{
+		try 
+		{
+			$events = Event::where('date', '>=', $data["from_date"])
+							->where('date', '<=', $data["to_date"])
+							->distinct()
+							->get(['location']);
+
+			$events = json_decode(json_encode($events));
+			$eventsWithWeather = [];
+
+			foreach($events as $event) {
+				$event = (array) $event;
+				array_push($eventsWithWeather, $this->appendWeatherData($event));
+			}
+
+			return formatResponse(200, 'Success', true, $eventsWithWeather);
+		} catch (Exception $e) {
+			return formatResponse(fetchErrorCode($e), get_class($e) . ": " . $e->getMessage());
+		}
+	}
 }

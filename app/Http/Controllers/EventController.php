@@ -140,4 +140,29 @@ class EventController extends Controller
 
         return formatResponse(400, 'Bad Request');
 	}
+
+	/**
+	 * Display a list of locations for events for a time interval
+	 * 
+	 * @param  \Illuminate\Http\Request  $request
+	 * @return \Illuminate\Http\Response
+	 */
+	public function getEventLocations(Request $request)
+	{
+		$validator  =   Validator::make($request->all(), [
+			"from_date"  =>  "required|date_format:Y-m-d",
+			"to_date"  =>  "required|date_format:Y-m-d",
+		]);
+
+		if($validator->fails()) {
+			return formatResponse(400, $validator->errors());
+		}
+
+		$data = [
+			"from_date" => $request->from_date,
+			"to_date" => $request->to_date,
+		];
+
+        return $this->eventRepository->fetchLocations($data);
+	}
 }
