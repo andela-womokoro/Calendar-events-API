@@ -33,7 +33,7 @@ class Invitation extends Model
     /**
      * Get the user this invitation belongs to.
      */
-    public function event()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

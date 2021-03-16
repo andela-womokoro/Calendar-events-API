@@ -33,6 +33,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::get('/events/{eventId}', [EventController::class, 'show']);
 	Route::delete('/events/{id}', [EventController::class, 'destroy']);
 	Route::put('/events/{id}', [EventController::class, 'update']);
-	Route::get('/event-locations', [EventController::class, 'getEventLocations']);
+	Route::get('/event-locations', [EventController::class, 'locations']);
 });
    

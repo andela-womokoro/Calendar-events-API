@@ -147,7 +147,7 @@ class EventController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function getEventLocations(Request $request)
+	public function locations(Request $request)
 	{
 		$validator  =   Validator::make($request->all(), [
 			"from_date"  =>  "required|date_format:Y-m-d",
