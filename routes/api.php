@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InvitationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,8 +32,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 	Route::post('/events', [EventController::class, 'store']);
 	Route::get('/events', [EventController::class, 'index']);
 	Route::get('/events/{eventId}', [EventController::class, 'show']);
-	Route::delete('/events/{id}', [EventController::class, 'destroy']);
-	Route::put('/events/{id}', [EventController::class, 'update']);
+	Route::delete('/events/{eventId}', [EventController::class, 'destroy']);
+	Route::put('/events/{eventId}', [EventController::class, 'update']);
 	Route::get('/event-locations', [EventController::class, 'locations']);
+	Route::post('/events/{eventId}/invite', [InvitationController::class, 'store']);
 });
    
