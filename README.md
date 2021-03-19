@@ -28,13 +28,16 @@ To get started:
 + Make sure you have [Composer](https://getcomposer.org/doc/00-intro.md) installed on your computer to manage your composer dependencies.
 + Download and install [Docker Desktop](https://www.docker.com/)  
 + Clone this repo
-+ Cd in the application folder and run sail up command:
++ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel is setup, you can run then Run sail up command to start up your docker ccontainers:
 
 ```
 cd calendar-event-api
 
+composer require laravel/sail --dev
+
 ./vendor/bin/sail up
 `````
+Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
 
 The first time you run the Sail up command, Sail's application containers will be built on your machine. This could take several minutes. Don't worry, subsequent attempts to start Sail will be much faster.
 
@@ -44,7 +47,13 @@ The first time you run the Sail up command, Sail's application containers will b
 php artisan migrate
 `````
 
-With Laravel sail the command to run migrations should be
+__Database__
+
+The application's docker-compose.yml file contains an entry for a MySQL container. This container uses a Docker volume so that the data stored in your database is persisted even when stopping and restarting your containers. In addition, when the MySQL container is starting, it will ensure a database exists whose name matches the value of your DB_DATABASE environment variable.
+
+Once you have started your containers, you may connect to the MySQL instance within your application using a database client by setting your DB_HOST environment variable within your application's .env file to mysql.
+
+After connecting to the database, run the applications database migrations to create the required database. With Laravel sail the command to run migrations should be
 
 ```
 sail artisan migrate
@@ -59,6 +68,9 @@ __Request__
 
 
 __Response__
+
+
+__Invitation Emails__
 
 
 ## 
