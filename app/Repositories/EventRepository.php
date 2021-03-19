@@ -18,13 +18,22 @@ class EventRepository extends BaseRepository
 	public function create($data)
 	{
 		try {
+			$eventCreatorId = 0;
+
+			if (isset($data['created_by'])) {
+				$eventCreatorId = $data['created_by'];
+			} else {
+				$eventCreatorId = auth()->user()->id;
+			}
+
 			$event = Event::create([
 				"description" => $data["description"],
 				"date" => $data["date"],
 				"time" => $data["time"],
 				"location" => $data["location"],
-				"created_by" => auth()->user()->id,
+				"created_by" => $eventCreatorId,
 			]);
+			
 
 			if (is_null($event)) {
 				return formatResponse(200, 'Event not created');

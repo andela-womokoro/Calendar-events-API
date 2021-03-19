@@ -63,6 +63,10 @@ class EventController extends Controller
 			"location" => $inputs["location"],
 		];
 
+		if ($request->has('created_by')) {
+            $data['created_by'] = $request->created_by;
+        }
+        
 		return $this->eventRepository->create($data);
 	}
 

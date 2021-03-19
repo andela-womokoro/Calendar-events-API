@@ -41,6 +41,10 @@ class InvitationController extends Controller
             "user_id" => $inputs["user_id"],
         ];
 
+        if ($request->has('created_by')) {
+            $data['created_by'] = $request->created_by;
+        }
+
         return $this->invitationRepository->create($data);
     }
 

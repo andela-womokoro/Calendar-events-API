@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class UserFactory extends Factory
+class EventFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = Event::class;
 
     /**
      * Define the model's default state.
@@ -23,11 +23,11 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'username' => $this->faker->unique()->userName,
-            'password' => $this->faker->password,
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'email' => $this->faker->unique()->safeEmail,
+            'description' => $this->faker->sentence,
+            'date' => $this->faker->date,
+            'time' => $this->faker->time,
+            'location' => $this->faker->city,
+            'created_by' => User::pluck('id')->random(),
         ];
     }
 }

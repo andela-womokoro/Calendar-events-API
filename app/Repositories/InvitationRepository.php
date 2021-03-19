@@ -21,11 +21,19 @@ class InvitationRepository extends BaseRepository
 	public function create($data)
 	{
 		try {
+			$eventCreatorId = 0;
+
+			if (isset($data['created_by'])) {
+				$invitationCreatorId = $data['created_by'];
+			} else {
+				$invitationCreatorId = auth()->user()->id;
+			}
+
 			$invitation = Invitation::create([
 				"email_sent" => "no",
 				"event_id" => $data["event_id"],
 				"user_id" => $data["user_id"],
-				"created_by" => auth()->user()->id,
+				"created_by" => $invitationCreatorId,
 			]);
 
 			if (is_null($invitation)) {
