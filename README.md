@@ -1,7 +1,7 @@
 
 # Calendar Event API
 
-This is a simplified API built with PHP Laravel framework to manage calendar events scheduling. Though simplified, it is designed to be easily built upon (extensible) to become a fully functional API for calendar events management. This API caters for multiple users and enables them to:
+This is a simplified REST API built with PHP Laravel framework to manage calendar events scheduling. Though simplified, it is designed to be easily built upon (extensible) to become a fully functional API for calendar events management. This API caters for multiple users and enables them to:
 
 + Add upcoming events 
 + View all upcoming events within a specified date range, and the weather forecast for the event locations.
@@ -52,13 +52,14 @@ After connecting to the database, run the applications database migrations to cr
 ```
 sail artisan migrate
 `````
-+ 
 
 
 ## Usage
 
 
 __Endpoints__
+The API endpoints can be tested with [Postman](https://www.postman.com/downloads/) or similar tools.
+
 -  Register new user
 
 ```
