@@ -28,7 +28,7 @@ To get started:
 + Make sure you have [Composer](https://getcomposer.org/doc/00-intro.md) installed on your computer to manage your composer dependencies.
 + Download and install [Docker Desktop](https://www.docker.com/)  
 + Clone this repo
-+ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel is setup, you can run then Run sail up command to start up your docker ccontainers:
++ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel is setup, you can run then run sail up command to start up your docker ccontainers:
 
 ```
 cd calendar-event-api
@@ -40,12 +40,6 @@ composer require laravel/sail --dev
 Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
 
 The first time you run the Sail up command, Sail's application containers will be built on your machine. This could take several minutes. Don't worry, subsequent attempts to start Sail will be much faster.
-
-+ Next run the database migrations to setup the database.
-
-```
-php artisan migrate
-`````
 
 __Database__
 
@@ -64,10 +58,83 @@ sail artisan migrate
 ## Usage
 
 
-__Request__
+__Endpoints__
+-  Register new user
+
+```
+POST /api/register
+
+Data:
+{
+	"username" : "testuser",
+	"password" : "foobar",
+	"first_name" : "test",
+	"last_name" : "user",
+	"email" : "test@domain.com",
+}
 
 
-__Response__
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "User created",
+    "data": {
+        "username": "testuser",
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "test@domain.com",
+        "updated_at": "2021-03-19T21:16:31.000000Z",
+        "created_at": "2021-03-19T21:16:31.000000Z",
+        "id": 21
+    }
+}
+`````
+
+-  User Login
+```
+POST /api/login
+
+Data:
+{
+	"email" : "test@domain.com",
+	"password" : "foobar",
+}
+
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Login successful",
+    "data": {
+        "token": "2|azCmFbALQRQKYYwemtgu0Qy0xU9epH3MZi5weYz1"
+    }
+}
+`````
+
+-  User Logout
+```
+GET /api/logout
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Login successful",
+    "data": {
+        "token": "2|azCmFbALQRQKYYwemtgu0Qy0xU9epH3MZi5weYz1"
+    }
+}
+`````
+
+
 
 
 __Invitation Emails__
