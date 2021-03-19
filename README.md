@@ -1,62 +1,483 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Calendar Event API
 
-## About Laravel
+This is a simplified REST API built with PHP Laravel framework to manage calendar events scheduling. Though simplified, it is designed to be easily built upon (extensible) to become a fully functional API for calendar events management. This API caters for multiple users and enables them to:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
++ Register
++ Log in
++ Add upcoming events 
++ View all upcoming events within a specified date range, and the weather forecast for the event locations.
++ View details of a specific event and the weather forecast for the event location.
++ Invite users to events. An invitation email will be sent.
++ Update events
++ Delete events
++ Get a list of locations where events are coming up within a specified date range
++ Log out
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
++ Laravel 8. +
++ PHP 7.3 +
++ MySQL 8.0 +
++ Postman 
++ Docker
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Installing this app is pretty straightforward. There are different ways you can run this app, but I recommend using Laravel sail, which is a light-weight command-line interface for interacting with Laravel's default Docker development environment. Laravel Sail is supported on macOS, Linux, and Windows. 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+To get started:
 
-## Laravel Sponsors
++ Make sure you have [Composer](https://getcomposer.org/doc/00-intro.md) installed on your computer to manage your composer dependencies.
++ Download and install [Docker Desktop](https://www.docker.com/)  
++ Clone this repo
++ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel sail is setup, you can then run `sail up` command to start up your docker containers. The containers needed to run this application are Laravel and MySQL containers. They are bundled with laravel sail once it has been setup.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```
+cd calendar-event-api
 
-### Premium Partners
+composer require laravel/sail --dev
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+./vendor/bin/sail up
+`````
+Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
 
-## Contributing
+The first time you run the `sail up` command, Sail's application containers will be built on your machine. This could take several minutes. Don't worry, subsequent attempts to start Sail will be much faster.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+__Database__
 
-## Code of Conduct
+The application's `docker-compose.yml` file contains an entry for a MySQL container. This container uses a Docker volume so that the data stored in your database is persisted even when stopping and restarting your containers. In addition, when the MySQL container is starting, it will ensure a database exists whose name matches the value of your `DB_DATABASE` environment variable.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Once you have started your containers, you may connect to the MySQL instance within your application using a database client by setting your `DB_HOST` environment variable within your application's `.env` file to `mysql`.
 
-## Security Vulnerabilities
+```
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE={database name}
+DB_USERNAME={username}
+DB_PASSWORD={password}
+`````
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+After connecting to the database, run the application's database migrations to create the required database. With Laravel sail the command to run migrations should be
 
-## License
+```
+sail artisan migrate
+`````
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Usage
+
+
+__Endpoints__
+
+The API endpoints can be tested with [Postman](https://www.postman.com/downloads/) or similar tools.
+
+-  Register new user
+
+```
+POST /api/register
+
+Data:
+{
+	"username" : "testuser",
+	"password" : "foobar",
+	"first_name" : "test",
+	"last_name" : "user",
+	"email" : "test@domain.com",
+}
+
+
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "User created",
+    "data": {
+        "username": "testuser",
+        "first_name": "Test",
+        "last_name": "User",
+        "email": "test@domain.com",
+        "updated_at": "2021-03-19T21:16:31.000000Z",
+        "created_at": "2021-03-19T21:16:31.000000Z",
+        "id": 21
+    }
+}
+`````
+
+-  User Login
+```
+POST /api/login
+
+Data:
+{
+	"email" : "test@domain.com",
+	"password" : "foobar",
+}
+
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Login successful",
+    "data": {
+        "token": "2|azCmFbALQRQKYYwemtgu0Qy0xU9epH3MZi5weYz1"
+    }
+}
+`````
+
+-  User Logout
+```
+GET /api/logout
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Login successful",
+    "data": {
+        "token": "2|azCmFbALQRQKYYwemtgu0Qy0xU9epH3MZi5weYz1"
+    }
+}
+`````
+
+-  Create an event
+```
+GET /api/events
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Data:
+{
+	"description" : "Team meeting",
+	"date" : "2021-03-30",
+	"time" : "15:00:00",
+	"location" : "Brussels",
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "Event created",
+    "data": {
+        "description": "Team meeting",
+        "date": "2021-03-30",
+        "time": "15:00:00",
+        "location": "Brussels",
+        "created_by": 21,
+        "updated_at": "2021-03-19T21:29:49.000000Z",
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "id": 37
+    }
+}
+`````
+
+-  View single event
+```
+GET /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Ok",
+    "data": {
+        "id": 37,
+        "description": "Team meeting",
+        "date": "2021-03-30",
+        "time": "15:00:00",
+        "location": "Brussels",
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:29:49.000000Z",
+        "weather": {
+            "description": "few clouds",
+            "temperature": 4.11,
+            "humidity": 75
+        }
+    }
+}
+`````
+
+-  View list of events
+```
+GET /api/events?from_date=2021-03-01&to_date=2021-03-30
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Ok",
+    "data": {
+        "total": 5,
+        "per_page": 10,
+        "current_page": 1,
+        "last_page": 1,
+        "first_page_url": "http://localhost/api/events?from_date=2021-03-01&to_date=2021-03-30&page=1",
+        "last_page_url": "http://localhost/api/events?from_date=2021-03-01&to_date=2021-03-30&page=1",
+        "next_page_url": null,
+        "prev_page_url": null,
+        "from": 1,
+        "to": 5,
+        "payload": [
+            {
+                "id": 39,
+                "description": "One on one",
+                "date": "2021-03-03",
+                "time": "11:00:00",
+                "location": "Paris",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:33:40.000000Z",
+                "updated_at": "2021-03-19T21:33:40.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 4.86,
+                    "humidity": 56
+                }
+            },
+            {
+                "id": 41,
+                "description": "Sprint planning",
+                "date": "2021-03-09",
+                "time": "10:00:00",
+                "location": "Ghent",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:34:39.000000Z",
+                "updated_at": "2021-03-19T21:34:39.000000Z",
+                "weather": {
+                    "description": "scattered clouds",
+                    "temperature": 3.17,
+                    "humidity": 82
+                }
+            },
+            {
+                "id": 38,
+                "description": "weekly meeting",
+                "date": "2021-03-11",
+                "time": "11:30:00",
+                "location": "London",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:33:09.000000Z",
+                "updated_at": "2021-03-19T21:33:09.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 5.3,
+                    "humidity": 70
+                }
+            },
+            {
+                "id": 40,
+                "description": "Company all-hands meeting",
+                "date": "2021-03-25",
+                "time": "11:00:00",
+                "location": "London",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:34:12.000000Z",
+                "updated_at": "2021-03-19T21:34:12.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 5.3,
+                    "humidity": 70
+                }
+            },
+            {
+                "id": 37,
+                "description": "Team meeting",
+                "date": "2021-03-30",
+                "time": "15:00:00",
+                "location": "Brussels",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:29:49.000000Z",
+                "updated_at": "2021-03-19T21:29:49.000000Z",
+                "weather": {
+                    "description": "few clouds",
+                    "temperature": 3.82,
+                    "humidity": 81
+                }
+            }
+        ]
+    }
+}
+`````
+
+-  Update an event
+```
+PUT /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Data:
+{
+	"description" : "Sprint planning",
+	"date" : "2021-03-09",
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event updated",
+    "data": {
+        "id": 37,
+        "description": "Sprint planning",
+        "date": "2021-03-09",
+        "time": "10:00:00",
+        "location": "Ghent",
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:43:14.000000Z"
+    }
+}
+`````
+
+-  Delete an event
+```
+DELETE /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event deleted",
+    "data": []
+}
+`````
+
+-  Invite a user to an event
+```
+POST /api/events/41/invite
+
+Data:
+{
+	user_id: 20
+}
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "Invitation created",
+    "data": {
+        "id": 3,
+        "email_sent": "yes",
+        "event_id": 41,
+        "user_id": 20,
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:43:14.000000Z"
+    }
+}
+`````
+
+-  Delete an event
+```
+DELETE /api/events/41
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event deleted",
+    "data": []
+}
+`````
+
+-  Fetch event locations for a time frame. Same locations are not repeated.
+```
+GET /api/event-locations?from_date=2021-03-01&to_date=2021-03-30
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "location": "London",
+            "weather": {
+                "description": "few clouds",
+                "temperature": 4.9,
+                "humidity": 75
+            }
+        },
+        {
+            "location": "Paris",
+            "weather": {
+                "description": "clear sky",
+                "temperature": 4.53,
+                "humidity": 56
+            }
+        }
+    ]
+}
+`````
+
+__Invitation Emails__
+
+Invitation emails are sent to users when they get invited to an event. For this to happen you need to specify valid email server configurations in the .env file. For testing purposes I used Gmail SMTP client for sending invitation emails. You can use similar settings to test email sending on localhost.
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME={you gmail email address}
+MAIL_PASSWORD={your gmail password}
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS={you gmail email address}
+MAIL_FROM_NAME="${APP_NAME}"
+`````
+
+This is solely for testing on local. On production however, a more robust email service such as mailgun should be used. 
+
