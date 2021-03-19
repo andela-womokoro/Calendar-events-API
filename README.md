@@ -134,11 +134,336 @@ Response:
 }
 `````
 
+-  Create an event
+```
+GET /api/events
 
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
 
+Data:
+{
+	"description" : "Team meeting",
+	"date" : "2021-03-30",
+	"time" : "15:00:00",
+	"location" : "Brussels",
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "Event created",
+    "data": {
+        "description": "Team meeting",
+        "date": "2021-03-30",
+        "time": "15:00:00",
+        "location": "Brussels",
+        "created_by": 21,
+        "updated_at": "2021-03-19T21:29:49.000000Z",
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "id": 37
+    }
+}
+`````
+
+-  View single event
+```
+GET /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Ok",
+    "data": {
+        "id": 37,
+        "description": "Team meeting",
+        "date": "2021-03-30",
+        "time": "15:00:00",
+        "location": "Brussels",
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:29:49.000000Z",
+        "weather": {
+            "description": "few clouds",
+            "temperature": 4.11,
+            "humidity": 75
+        }
+    }
+}
+`````
+
+-  View list of events
+```
+GET /api/events?from_date=2021-03-01&to_date=2021-03-30
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Ok",
+    "data": {
+        "total": 5,
+        "per_page": 10,
+        "current_page": 1,
+        "last_page": 1,
+        "first_page_url": "http://localhost/api/events?from_date=2021-03-01&to_date=2021-03-30&page=1",
+        "last_page_url": "http://localhost/api/events?from_date=2021-03-01&to_date=2021-03-30&page=1",
+        "next_page_url": null,
+        "prev_page_url": null,
+        "from": 1,
+        "to": 5,
+        "payload": [
+            {
+                "id": 39,
+                "description": "One on one",
+                "date": "2021-03-03",
+                "time": "11:00:00",
+                "location": "Paris",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:33:40.000000Z",
+                "updated_at": "2021-03-19T21:33:40.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 4.86,
+                    "humidity": 56
+                }
+            },
+            {
+                "id": 41,
+                "description": "Sprint planning",
+                "date": "2021-03-09",
+                "time": "10:00:00",
+                "location": "Ghent",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:34:39.000000Z",
+                "updated_at": "2021-03-19T21:34:39.000000Z",
+                "weather": {
+                    "description": "scattered clouds",
+                    "temperature": 3.17,
+                    "humidity": 82
+                }
+            },
+            {
+                "id": 38,
+                "description": "weekly meeting",
+                "date": "2021-03-11",
+                "time": "11:30:00",
+                "location": "London",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:33:09.000000Z",
+                "updated_at": "2021-03-19T21:33:09.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 5.3,
+                    "humidity": 70
+                }
+            },
+            {
+                "id": 40,
+                "description": "Company all-hands meeting",
+                "date": "2021-03-25",
+                "time": "11:00:00",
+                "location": "London",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:34:12.000000Z",
+                "updated_at": "2021-03-19T21:34:12.000000Z",
+                "weather": {
+                    "description": "clear sky",
+                    "temperature": 5.3,
+                    "humidity": 70
+                }
+            },
+            {
+                "id": 37,
+                "description": "Team meeting",
+                "date": "2021-03-30",
+                "time": "15:00:00",
+                "location": "Brussels",
+                "created_by": 21,
+                "created_at": "2021-03-19T21:29:49.000000Z",
+                "updated_at": "2021-03-19T21:29:49.000000Z",
+                "weather": {
+                    "description": "few clouds",
+                    "temperature": 3.82,
+                    "humidity": 81
+                }
+            }
+        ]
+    }
+}
+`````
+
+-  Update an event
+```
+PUT /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Data:
+{
+	"description" : "Sprint planning",
+	"date" : "2021-03-09",
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event updated",
+    "data": {
+        "id": 37,
+        "description": "Sprint planning",
+        "date": "2021-03-09",
+        "time": "10:00:00",
+        "location": "Ghent",
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:43:14.000000Z"
+    }
+}
+`````
+
+-  Delete an event
+```
+DELETE /api/events/37
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event deleted",
+    "data": []
+}
+`````
+
+-  Invite a user to an event
+```
+POST /api/events/41/invite
+
+Data:
+{
+	user_id: 20
+}
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 201,
+    "message": "Invitation created",
+    "data": {
+        "id": 3,
+        "email_sent": "yes",
+        "event_id": 41,
+        "user_id": 20,
+        "created_by": 21,
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:43:14.000000Z"
+    }
+}
+`````
+
+-  Delete an event
+```
+DELETE /api/events/41
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Event deleted",
+    "data": []
+}
+`````
+
+-  Fetch event locations for a time frame. Same locations are not repeated.
+```
+GET /api/event-locations?from_date=2021-03-01&to_date=2021-03-30
+
+Headers:
+{
+	Authorization: Bearer {token}
+	Accept: application/json
+}
+
+Response:
+{
+    "success": true,
+    "status_code": 200,
+    "message": "Success",
+    "data": [
+        {
+            "location": "London",
+            "weather": {
+                "description": "few clouds",
+                "temperature": 4.9,
+                "humidity": 75
+            }
+        },
+        {
+            "location": "Paris",
+            "weather": {
+                "description": "clear sky",
+                "temperature": 4.53,
+                "humidity": 56
+            }
+        }
+    ]
+}
+`````
 
 __Invitation Emails__
 
+Invitation emails are sent to users when they get invited to an event. For this to happen you need to specify valid email server configurations in the .env file. For testing purposes I used Gmail SMTP client for sending invitation emails. You can use similar settings to test email sending on localhost.
 
-## 
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME={you gmail email address}
+MAIL_PASSWORD={your gmail password}
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS={you gmail email address}
+MAIL_FROM_NAME="${APP_NAME}"
+`````
+
+This is solely for testing on local. On production however, a more robust email service such as mailgun should be used. 
 
