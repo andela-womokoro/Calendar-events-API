@@ -9,7 +9,7 @@ use App\Models\Invitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class InvitationControllerTest extends TestCase
+class InvitationTest extends TestCase
 {
 	use RefreshDatabase, WithoutMiddleware;
 

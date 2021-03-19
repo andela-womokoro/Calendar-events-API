@@ -8,7 +8,7 @@ use App\Models\Event;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class EventControllerTest extends TestCase
+class EventTest extends TestCase
 {
 	use RefreshDatabase, WithoutMiddleware;
 

@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-class UserControllerTest extends TestCase
+class UserTest extends TestCase
 {
 	use RefreshDatabase, WithoutMiddleware;
 
