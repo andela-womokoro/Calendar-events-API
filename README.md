@@ -15,7 +15,7 @@ This is a simplified REST API built with PHP Laravel framework to manage calenda
 + Laravel 8. +
 + PHP 7.3 +
 + MySQL 8.0 +
-+ [Postman](https://www.postman.com/downloads/) 
++ Postman 
 + Docker
 
 
@@ -28,7 +28,7 @@ To get started:
 + Make sure you have [Composer](https://getcomposer.org/doc/00-intro.md) installed on your computer to manage your composer dependencies.
 + Download and install [Docker Desktop](https://www.docker.com/)  
 + Clone this repo
-+ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel is setup, you can run then run sail up command to start up your docker ccontainers:
++ Cd in the application folder then [setup laravel sail](https://laravel.com/docs/8.x/sail) for the application. Once laravel sail is setup, you can then run `sail up` command to start up your docker containers. The containers needed to run this application are Laravel and MySQL containers. They are bundled with laravel sail once it has been setup.
 
 ```
 cd calendar-event-api
@@ -39,15 +39,24 @@ composer require laravel/sail --dev
 `````
 Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
 
-The first time you run the Sail up command, Sail's application containers will be built on your machine. This could take several minutes. Don't worry, subsequent attempts to start Sail will be much faster.
+The first time you run the `sail up` command, Sail's application containers will be built on your machine. This could take several minutes. Don't worry, subsequent attempts to start Sail will be much faster.
 
 __Database__
 
-The application's docker-compose.yml file contains an entry for a MySQL container. This container uses a Docker volume so that the data stored in your database is persisted even when stopping and restarting your containers. In addition, when the MySQL container is starting, it will ensure a database exists whose name matches the value of your DB_DATABASE environment variable.
+The application's `docker-compose.yml` file contains an entry for a MySQL container. This container uses a Docker volume so that the data stored in your database is persisted even when stopping and restarting your containers. In addition, when the MySQL container is starting, it will ensure a database exists whose name matches the value of your `DB_DATABASE` environment variable.
 
-Once you have started your containers, you may connect to the MySQL instance within your application using a database client by setting your DB_HOST environment variable within your application's .env file to mysql.
+Once you have started your containers, you may connect to the MySQL instance within your application using a database client by setting your `DB_HOST` environment variable within your application's `.env` file to `mysql`.
 
-After connecting to the database, run the applications database migrations to create the required database. With Laravel sail the command to run migrations should be
+```
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE={database name}
+DB_USERNAME={username}
+DB_PASSWORD={password}
+`````
+
+After connecting to the database, run the application's database migrations to create the required database. With Laravel sail the command to run migrations should be
 
 ```
 sail artisan migrate
@@ -58,6 +67,7 @@ sail artisan migrate
 
 
 __Endpoints__
+
 The API endpoints can be tested with [Postman](https://www.postman.com/downloads/) or similar tools.
 
 -  Register new user
