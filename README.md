@@ -323,7 +323,7 @@ Response:
 
 -  Update an event
 ```
-PUT /api/events/38
+PUT /api/events/37
 
 Headers:
 {
@@ -341,21 +341,16 @@ Response:
 {
     "success": true,
     "status_code": 200,
-    "message": "Ok",
+    "message": "Event updated",
     "data": {
-        "id": 38,
-        "description": "weekly meeting",
-        "date": "2021-03-11",
-        "time": "11:30:00",
-        "location": "London",
+        "id": 37,
+        "description": "Sprint planning",
+        "date": "2021-03-09",
+        "time": "10:00:00",
+        "location": "Ghent",
         "created_by": 21,
-        "created_at": "2021-03-19T21:33:09.000000Z",
-        "updated_at": "2021-03-19T21:33:09.000000Z",
-        "weather": {
-            "description": "clear sky",
-            "temperature": 13.92,
-            "humidity": 50
-        }
+        "created_at": "2021-03-19T21:29:49.000000Z",
+        "updated_at": "2021-03-19T21:43:14.000000Z"
     }
 }
 `````
