@@ -3,6 +3,8 @@
 
 This is a simplified REST API built with PHP Laravel framework to manage calendar events scheduling. Though simplified, it is designed to be easily built upon (extensible) to become a fully functional API for calendar events management. This API caters for multiple users and enables them to:
 
++ Register
++ Log in
 + Add upcoming events 
 + View all upcoming events within a specified date range, and the weather forecast for the event locations.
 + View details of a specific event and the weather forecast for the event location.
@@ -10,6 +12,7 @@ This is a simplified REST API built with PHP Laravel framework to manage calenda
 + Update events
 + Delete events
 + Get a list of locations where events are coming up within a specified date range
++ Log out
 
 ## Requirements
 + Laravel 8. +
