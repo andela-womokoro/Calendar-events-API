@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Exception;
 use App\Models\Event;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EventRepository extends BaseRepository
@@ -113,20 +114,28 @@ class EventRepository extends BaseRepository
 	 */
 	private function appendWeatherData($event)
 	{
-		$weatherApiResponse = Http::get("api.openweathermap.org/data/2.5/weather", [
-		    "q" => $event["location"],
-		    "appid" => "e0cb20654a35a92900ef7feadc978184",
-		    "units" => "metric",
-		]);
-
-		if ($weatherApiResponse->ok()) {
-			$jsonData = $weatherApiResponse->json();
-			$event['weather'] = [
-				"description" => $jsonData["weather"][0]["description"],
-				"temperature" => $jsonData["main"]["temp"],
-				"humidity" => $jsonData["main"]["humidity"],
+		$weatherData = [
+				"description" => "-",
+				"temperature" => "-",
+				"humidity" => "-",
 			];
-		}
+		
+		try {
+			$weatherApiResponse = Http::get("api.openweathermap.org/data/2.5/weather", [
+			    "q" => $event["location"],
+			    "appid" => config('openweather.api_key'),
+			    "units" => config('openweather.temperature_unit'),
+			]);
+
+			if ($weatherApiResponse->ok()) {
+				$jsonData = $weatherApiResponse->json();
+				$weatherData["description"] = $jsonData["weather"][0]["description"];
+				$weatherData["temperature"] = $jsonData["main"]["temp"];
+				$weatherData["humidity"] = $jsonData["main"]["humidity"];
+			}
+		} catch (ConnectionException $ce) {}
+
+		$event['weather'] = $weatherData;
 
 		return $event;
 	}
