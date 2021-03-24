@@ -35,6 +35,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the events for this user.
+     */
+    public function event()
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    /**
      * Get the invitations for this user.
      */
     public function invitation()

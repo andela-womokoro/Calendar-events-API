@@ -29,4 +29,12 @@ class Event extends Model
     {
         return $this->hasMany(Invitation::class);
     }
+
+    /**
+     * Get the user this event belongs to.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
