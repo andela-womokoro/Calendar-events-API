@@ -6,11 +6,11 @@ abstract class BaseRepository
 {
     abstract function create($data);
 
-    abstract function fetchMany($begin, $perPage, $sortBy, $sortDirection);
+    abstract function fetchMany($userId, $begin, $perPage, $sortBy, $sortDirection);
 
-    abstract function fetchOne($id);
+    abstract function fetchOne($userId, $resourceId);
 
-    abstract function update($data, $id);
+    abstract function update($data);
 
-    abstract function delete($id);
+    abstract function delete($userId, $resourceId);
 }

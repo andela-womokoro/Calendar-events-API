@@ -82,22 +82,22 @@ class UserRepository extends BaseRepository
 		}
 	}
 
-	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
+	public function fetchMany($userId, $begin, $perPage, $sortBy, $sortDirection)
 	{
 		//
 	}
 
-	public function fetchOne($id)
+	public function fetchOne($userId, $resourceId)
 	{
 		//
 	}
 
-	public function update($data, $id)
+	public function update($data)
 	{
 		//
 	}
 
-	public function delete($id)
+	public function delete($userId, $resourceId)
 	{
 		//
 	}

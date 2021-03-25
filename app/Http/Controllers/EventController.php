@@ -23,16 +23,16 @@ class EventController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index(Request $request)
+	public function index(Request $request, $userId)
 	{
 		$begin = ($request->filled('begin')) ? $request->query('begin') : 0;
-        $perPage = ($request->filled('per_page')) ? $request->query('per_page') : 10;
-        $sortBy = ($request->filled('sort_by')) ? $request->query('sort_by') : "date";
-        $sortDirection = ($request->filled('sort_direction')) ? $request->query('sort_direction') : "asc";
-        $fromDate = ($request->filled('from_date')) ? $request->query('from_date') : null;
-        $toDate = ($request->filled('to_date')) ? $request->query('to_date') : null;
+		$perPage = ($request->filled('per_page')) ? $request->query('per_page') : 10;
+		$sortBy = ($request->filled('sort_by')) ? $request->query('sort_by') : "date";
+		$sortDirection = ($request->filled('sort_direction')) ? $request->query('sort_direction') : "asc";
+		$fromDate = ($request->filled('from_date')) ? $request->query('from_date') : null;
+		$toDate = ($request->filled('to_date')) ? $request->query('to_date') : null;
 
-        return $this->eventRepository->fetchMany($begin, $perPage, $sortBy, $sortDirection, $fromDate, $toDate);
+		return $this->eventRepository->fetchMany($userId, $begin, $perPage, $sortBy, $sortDirection, $fromDate, $toDate);
 	}
 
 	/**
@@ -41,7 +41,7 @@ class EventController extends Controller
 	 * @param  \Illuminate\Http\Request  $request
 	 * @return \Illuminate\Http\Response
 	 */
-	public function store(Request $request)
+	public function store(Request $request, $userId)
 	{
 		$validator  =   Validator::make($request->all(), [
 			"description"  =>  "required",
@@ -61,12 +61,9 @@ class EventController extends Controller
 			"date" => $inputs["date"],
 			"time" => $inputs["time"],
 			"location" => $inputs["location"],
+			"created_by" => $userId,
 		];
-
-		if ($request->has('created_by')) {
-            $data['created_by'] = $request->created_by;
-        }
-        
+		
 		return $this->eventRepository->create($data);
 	}
 
@@ -76,13 +73,9 @@ class EventController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function show($id)
+	public function show($userId, $eventId)
 	{
-		if (is_numeric($id)) {
-            return $this->eventRepository->fetchOne($id);
-        }
-
-        return formatResponse(400, 'Bad Request');
+		return $this->eventRepository->fetchOne($userId, $eventId);
 	}
 
 	/**
@@ -92,7 +85,7 @@ class EventController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id)
+	public function update(Request $request, $userId, $eventId)
 	{
 		$validator  =   Validator::make($request->all(), [
 			"description"  =>  "filled",
@@ -105,29 +98,28 @@ class EventController extends Controller
 			return formatResponse(400, $validator->errors());
 		}
 
-		$data = [];
+		$data = [
+			"user_id" => $userId,
+			"event_id" => $eventId,
+		];
 
 		if ($request->has('description')) {
-            $data['description'] = $request->description;
-        }
+			$data['description'] = $request->description;
+		}
 
-        if ($request->has('date')) {
-            $data['date'] = $request->date;
-        }
+		if ($request->has('date')) {
+			$data['date'] = $request->date;
+		}
 
-        if ($request->has('time')) {
-            $data['time'] = $request->time;
-        }
+		if ($request->has('time')) {
+			$data['time'] = $request->time;
+		}
 
-        if ($request->has('location')) {
-            $data['location'] = $request->location;
-        }
+		if ($request->has('location')) {
+			$data['location'] = $request->location;
+		}
 
-		if (is_numeric($id)) {
-            return $this->eventRepository->update($data, $id);
-        }
-
-        return formatResponse(400, 'Bad Request');
+		return $this->eventRepository->update($data);
 	}
 
 	/**
@@ -136,13 +128,9 @@ class EventController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id)
+	public function destroy($userId, $eventId)
 	{
-		if (is_numeric($id)) {
-            return $this->eventRepository->delete($id);
-        }
-
-        return formatResponse(400, 'Bad Request');
+		return $this->eventRepository->delete($userId, $eventId);
 	}
 
 	/**
@@ -167,6 +155,6 @@ class EventController extends Controller
 			"to_date" => $request->to_date,
 		];
 
-        return $this->eventRepository->fetchLocations($data);
+		return $this->eventRepository->fetchLocations($data);
 	}
 }

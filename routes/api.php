@@ -23,19 +23,32 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::group(['middleware' => 'api'], function () {
-	Route::post('/register', [UserController::class, 'register']);
-    Route::post('/login', [UserController::class, 'login']);
+	Route::post('/users/register', [UserController::class, 'register']);
+    Route::post('/users/login', [UserController::class, 'login']);
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-	Route::get('/logout', [UserController::class, 'logout']);
-	Route::post('/events', [EventController::class, 'store']);
-	Route::get('/events', [EventController::class, 'index']);
-	Route::get('/events/{eventId}', [EventController::class, 'show']);
-	Route::delete('/events/{eventId}', [EventController::class, 'destroy']);
-	Route::put('/events/{eventId}', [EventController::class, 'update']);
-	Route::post('/events/{eventId}/invite', [InvitationController::class, 'store']);
-	Route::delete('/events/{eventId}/invite/{invitationId}', [InvitationController::class, 'destroy']);
+	Route::get('/users/logout', [UserController::class, 'logout']);
+	Route::post('/users/{userId}/events', [EventController::class, 'store'])
+			->whereNumber('userId');
+	Route::get('/users/{userId}/events', [EventController::class, 'index'])
+			->whereNumber('userId');
+	Route::get('/users/{userId}/events/{eventId}', [EventController::class, 'show'])
+			->whereNumber('userId')
+			->whereNumber('eventId');
+	Route::delete('/users/{userId}/events/{eventId}', [EventController::class, 'destroy'])
+			->whereNumber('userId')
+			->whereNumber('eventId');
+	Route::put('/users/{userId}/events/{eventId}', [EventController::class, 'update'])
+			->whereNumber('userId')
+			->whereNumber('eventId');
+	Route::post('/users/{userId}/events/{eventId}/invitations', [InvitationController::class, 'store'])
+			->whereNumber('userId')
+			->whereNumber('eventId');
+	Route::delete('/users/{userId}/events/{eventId}/invitations/{invitationId}', [InvitationController::class, 'destroy'])
+			->whereNumber('userId')
+			->whereNumber('eventId')
+			->whereNumber('invitationId');
 	Route::get('/event-locations', [EventController::class, 'locations']);
 });
    

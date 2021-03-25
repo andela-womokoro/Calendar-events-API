@@ -21,19 +21,11 @@ class InvitationRepository extends BaseRepository
 	public function create($data)
 	{
 		try {
-			$eventCreatorId = 0;
-
-			if (isset($data['created_by'])) {
-				$invitationCreatorId = $data['created_by'];
-			} else {
-				$invitationCreatorId = auth()->user()->id;
-			}
-
 			$invitation = Invitation::create([
 				"email_sent" => "no",
 				"event_id" => $data["event_id"],
-				"user_id" => $data["user_id"],
-				"created_by" => $invitationCreatorId,
+				"user_id" => $data["invitee_id"],
+				"created_by" => $data["created_by"],
 			]);
 
 			if (is_null($invitation)) {
@@ -42,7 +34,7 @@ class InvitationRepository extends BaseRepository
 
 			$event = Event::findOrFail($invitation->event_id);
 			$sender = User::findOrFail($invitation->created_by);
-			$recepient = User::findOrFail($data["user_id"]);
+			$recepient = User::findOrFail($data["invitee_id"]);
 
 			$invitationEmailWasSent = $this->sendInvitationEmail($event, $sender, $recepient);
 
@@ -94,10 +86,13 @@ class InvitationRepository extends BaseRepository
 	 * @param  int $id
 	 * @return json
 	 */
-	public function delete($id)
+	public function delete($userId, $invitationId)
 	{
 		try {
-			$invitation = Invitation::findOrFail($id);
+			$invitation = Invitation::where('id', '=', $invitationId)
+							->where('created_by', '=', $userId)
+							->firstOrFail();
+
 			$invitation->delete();
 
 			return formatResponse(200, 'Invitation deleted', true, []);
@@ -108,17 +103,17 @@ class InvitationRepository extends BaseRepository
 		}
 	}
 
-	public function fetchMany($begin, $perPage, $sortBy, $sortDirection)
+	public function fetchMany($userId, $begin, $perPage, $sortBy, $sortDirection)
 	{
 		//
 	}
 
-    public function fetchOne($id)
+    public function fetchOne($userId, $id)
     {
     	//
     }
 
-	public function update($data, $id)
+	public function update($data)
 	{
 		//
 	}

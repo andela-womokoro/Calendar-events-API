@@ -19,23 +19,14 @@ class EventRepository extends BaseRepository
 	public function create($data)
 	{
 		try {
-			$eventCreatorId = 0;
-
-			if (isset($data['created_by'])) {
-				$eventCreatorId = $data['created_by'];
-			} else {
-				$eventCreatorId = auth()->user()->id;
-			}
-
 			$event = Event::create([
 				"description" => $data["description"],
 				"date" => $data["date"],
 				"time" => $data["time"],
 				"location" => $data["location"],
-				"created_by" => $eventCreatorId,
+				"created_by" => $data['created_by'],
 			]);
 			
-
 			if (is_null($event)) {
 				return formatResponse(200, 'Event not created');
 			}
@@ -57,13 +48,14 @@ class EventRepository extends BaseRepository
 	 * @param  string $toDate
 	 * @return json
 	 */
-	public function fetchMany($begin, $perPage, $sortBy, $sortDirection, $fromDate = null, $toDate = null)
+	public function fetchMany($userId, $begin, $perPage, $sortBy, $sortDirection, $fromDate = null, $toDate = null)
 	{
 		try {
 			$events = null;
 
 			if (!is_null($fromDate) && !is_null($toDate)) {
-				$events = Event::where('date', '>=', $fromDate)
+				$events = Event::where('created_by', '=', $userId)
+								->where('date', '>=', $fromDate)
 								->where('date', '<=', $toDate)
 								->orderBy($sortBy, $sortDirection)
 								->offset($begin)
@@ -71,7 +63,8 @@ class EventRepository extends BaseRepository
 								->paginate($perPage)
 								->withQueryString();
 			} else {
-				$events = Event::orderBy($sortBy, $sortDirection)
+				$events = Event::where('created_by', '=', $userId)
+								->orderBy($sortBy, $sortDirection)
 								->offset($begin)
 								->limit($perPage)
 								->paginate($perPage)
@@ -146,10 +139,12 @@ class EventRepository extends BaseRepository
 	 * @param  int $id
 	 * @return json
 	 */
-	public function fetchOne($id)
+	public function fetchOne($userId, $eventId)
 	{
 		try {
-			$event = Event::findOrFail($id);
+			$event = Event::where('id', '=', $eventId)
+							->where('created_by', '=', $userId)
+							->firstOrFail();
 		
 			return formatResponse(200, 'Ok', true, $this->appendWeatherData($event));
 		} catch (ModelNotFoundException $mnfe) {
@@ -166,10 +161,12 @@ class EventRepository extends BaseRepository
 	 * @param  int $id
 	 * @return json
 	 */
-	public function update($data, $id)
+	public function update($data)
 	{
 		try {
-			$event = Event::findOrFail($id);
+			$event = Event::where('id', '=', $data['event_id'])
+							->where('created_by', '=', $data['user_id'])
+							->firstOrFail();
 
 			if (isset($data['description'])) {
 				$event->description = $data['description'];
@@ -207,10 +204,13 @@ class EventRepository extends BaseRepository
 	 * @param  int $id
 	 * @return json
 	 */
-	public function delete($id)
+	public function delete($userId, $eventId)
 	{
 		try {
-			$event = Event::findOrFail($id);
+			$event = Event::where('id', '=', $eventId)
+							->where('created_by', '=', $userId)
+							->firstOrFail();
+			
 			$event->delete();
 
 			return formatResponse(200, 'Event deleted', true, []);

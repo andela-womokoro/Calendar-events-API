@@ -24,10 +24,10 @@ class InvitationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $eventId)
+    public function store(Request $request, $userId, $eventId)
     {
         $validator  =   Validator::make($request->all(), [
-            "user_id"  =>  "required",
+            "invitee_id"  =>  "required",
         ]);
 
         if($validator->fails()) {
@@ -38,12 +38,9 @@ class InvitationController extends Controller
 
         $data = [
             "event_id" => $eventId,
-            "user_id" => $inputs["user_id"],
+            "invitee_id" => $inputs["invitee_id"],
+            "created_by" => $userId,
         ];
-
-        if ($request->has('created_by')) {
-            $data['created_by'] = $request->created_by;
-        }
 
         return $this->invitationRepository->create($data);
     }
@@ -54,12 +51,8 @@ class InvitationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($eventId, $invitationId)
+    public function destroy($userId, $eventId, $invitationId)
     {
-        if (is_numeric($invitationId)) {
-            return $this->invitationRepository->delete($invitationId);
-        }
-
-        return formatResponse(400, 'Bad Request');
+        return $this->invitationRepository->delete($userId, $invitationId);
     }
 }
