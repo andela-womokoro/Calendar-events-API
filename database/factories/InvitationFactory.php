@@ -26,7 +26,7 @@ class InvitationFactory extends Factory
         return [
             'email_sent' => $this->faker->randomElement(['no' ,'yes']),
             'event_id' => Event::pluck('id')->random(),
-            'user_id' => User::pluck('id')->random(),
+            'invitee_id' => User::pluck('id')->random(),
             'created_by' => User::pluck('id')->random(),
         ];
     }

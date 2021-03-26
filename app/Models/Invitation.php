@@ -17,7 +17,7 @@ class Invitation extends Model
     protected $fillable = [
         'email_sent',
         'event_id',
-        'user_id',
+        'invitee_id',
         'created_by',
     ];
 

@@ -59,23 +59,25 @@ class InvitationRepository extends BaseRepository
 	 */
 	private function sendInvitationEmail($event, $sender, $recepient)
 	{
-		$details = [
-	        "event_description" => $event->description,
-	        "event_date" => $event->date,
-	        "event_time" => $event->time,
-	        "event_location" => $event->location,
-	        "organizer_name" => $sender->first_name ." ". $sender->last_name,
-	        "organizer_email" => $sender->email,
-	        "invitee_name" => $recepient->first_name ." ". $recepient->last_name,
-	        "invitee_email" => $recepient->email,
-	    ];
+		try{
+			$details = [
+		        "event_description" => $event->description,
+		        "event_date" => $event->date,
+		        "event_time" => $event->time,
+		        "event_location" => $event->location,
+		        "organizer_name" => $sender->first_name ." ". $sender->last_name,
+		        "organizer_email" => $sender->email,
+		        "invitee_name" => $recepient->first_name ." ". $recepient->last_name,
+		        "invitee_email" => $recepient->email,
+		    ];
 
-	    $subject = "Invitation: ". $details["invitee_name"] ." and ". $details["organizer_name"];
-		$sendEmail = Mail::to($recepient->email)->send(new InvitationEmail($subject, $details));
+		    $subject = "Invitation: ". $details["invitee_name"] ." and ". $details["organizer_name"];
+			$sendEmail = Mail::to($recepient->email)->send(new InvitationEmail($subject, $details));
 
-		if(empty($sendMail)) {
-			return true;
-		}
+			if(empty($sendMail)) {
+				return true;
+			}
+		} catch (Exception $e) {}
 
 		return false;
 	}

@@ -23,7 +23,7 @@ class UserTest extends TestCase
 			'email' => $user->email,
 		];
 
-		$this->json('post', 'api/register', $payload)
+		$this->json('post', 'api/users/register', $payload)
 			->assertStatus(201)
 			->assertJsonStructure([
 				'data' => [
@@ -47,7 +47,7 @@ class UserTest extends TestCase
 			'password' => 'foobar',
 		];
 
-		$this->json('post', 'api/login', $payload)
+		$this->json('post', 'api/users/login', $payload)
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => [

@@ -14,10 +14,11 @@ class EventTest extends TestCase
 
     public function testIndex()
     {
-    	$user = User::factory()->count(5)->create();
-    	$events = Event::factory()->count(10)->create();
+    	$users = User::factory()->count(3)->create();
+    	$events = Event::factory()->count(30)->create();
+    	$firstUser = $users->first();
 
-    	$this->json('get', 'api/events')
+    	$this->json('get', "api/users/$firstUser->id/events")
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => [
@@ -60,7 +61,7 @@ class EventTest extends TestCase
 			'created_by' => $user->id,
 		];
 
-		$this->json('post', 'api/events', $payload)
+		$this->json('post', "api/users/$user->id/events", $payload)
 			->assertStatus(201)
 			->assertJsonStructure([
 				'data' => [
@@ -81,7 +82,7 @@ class EventTest extends TestCase
     	$user = User::factory()->create();
     	$event = Event::factory()->create();
 
-    	$this->json('get', 'api/events/'.$event->id)
+    	$this->json('get', "api/users/$user->id/events/$event->id")
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => [
@@ -107,7 +108,7 @@ class EventTest extends TestCase
 			'location' => 'Ghent',
 		];
 
-		$this->json('put', 'api/events/'.$event->id, $payload)
+		$this->json('put', "api/users/$user->id/events/$event->id", $payload)
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => [
@@ -128,7 +129,7 @@ class EventTest extends TestCase
     	$user = User::factory()->create();
     	$event = Event::factory()->create();
 
-    	$this->json('delete', 'api/events/'.$event->id)
+    	$this->json('delete', "api/users/$user->id/events/$event->id")
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => []

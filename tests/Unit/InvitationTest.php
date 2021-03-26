@@ -18,22 +18,15 @@ class InvitationTest extends TestCase
 		$organizer = User::factory()->create();
 		$invitee = User::factory()->create();
     	$event = Event::factory()->create();
-    	$invitation = Invitation::factory()->make();
+		$payload = ['invitee_id' => $invitee->id];
 
-		$payload = [
-			'email_sent' => 'no',
-			'event_id' => $event->id,
-			'user_id' => $invitee->id,
-			'created_by' => $organizer->id,
-		];
-
-		$this->json('post', "api/events/$event->id/invite/$invitation->id", $payload)
+		$this->json('post', "api/users/$organizer->id/events/$event->id/invitations", $payload)
 			->assertStatus(201)
 			->assertJsonStructure([
 				'data' => [
 					'email_sent',
 					'event_id',
-					'user_id',
+					'invitee_id',
 					'created_by',
 					'created_at',
 					'updated_at',
@@ -47,7 +40,7 @@ class InvitationTest extends TestCase
     	$event = Event::factory()->create();
     	$invitation = Invitation::factory()->create();
 
-    	$this->json('delete', "api/events/$event->id/invite/$invitation->id")
+    	$this->json('delete', "api/users/$user->id/events/$event->id/invitations/$invitation->id")
 			->assertStatus(200)
 			->assertJsonStructure([
 				'data' => []
