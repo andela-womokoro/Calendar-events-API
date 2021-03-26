@@ -24,7 +24,7 @@ class InvitationRepository extends BaseRepository
 			$invitation = Invitation::create([
 				"email_sent" => "no",
 				"event_id" => $data["event_id"],
-				"user_id" => $data["invitee_id"],
+				"invitee_id" => $data["invitee_id"],
 				"created_by" => $data["created_by"],
 			]);
 

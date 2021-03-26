@@ -17,10 +17,10 @@ class CreateInvitationsTable extends Migration
             $table->id();
             $table->enum('email_sent', ['no', 'yes'])->default('no');
             $table->foreignId('event_id');
-            $table->foreignId('user_id');
+            $table->foreignId('invitee_id');
             $table->foreignId('created_by');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('invitee_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
