@@ -54,6 +54,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 Route::fallback(function(){
-	return formatResponse(404, 'Page not found.');
+	return formatResponse(404, 'Invalid route.');
 });
    
