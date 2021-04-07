@@ -51,9 +51,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 			->whereNumber('invitationId');
 	Route::get('/event-locations', [EventController::class, 'locations']);
 });
-
-
-Route::fallback(function(){
-	return formatResponse(404, 'Invalid route.');
-});
    
