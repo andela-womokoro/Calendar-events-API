@@ -54,8 +54,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 Route::fallback(function(){
-	// return response()->json([
-	//     'message' => 'Page Not Found. If error persists, contact info@website.com'], 404);
-	return formatResponse(404, 'Page not found or method not supported for this route.');
+	return formatResponse(404, 'Page not found.');
 });
    
