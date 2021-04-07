@@ -3,9 +3,11 @@
 namespace App\Exceptions;
 
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+
 
 
 class Handler extends ExceptionHandler
@@ -47,6 +49,10 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (NotFoundHttpException $e, $request) {
             return formatResponse(404, 'Invalid route.');
+        });
+
+        $this->renderable(function (AuthenticationException $e, $request) {
+            return formatResponse(400, 'Missing or invalid authentication token.');
         });
     }
 }
