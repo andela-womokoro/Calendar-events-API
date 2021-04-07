@@ -18,13 +18,13 @@ use App\Http\Controllers\InvitationController;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
 });
 
 
 Route::group(['middleware' => 'api'], function () {
 	Route::post('/users/register', [UserController::class, 'register']);
-    Route::post('/users/login', [UserController::class, 'login']);
+	Route::post('/users/login', [UserController::class, 'login']);
 });
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -50,5 +50,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 			->whereNumber('eventId')
 			->whereNumber('invitationId');
 	Route::get('/event-locations', [EventController::class, 'locations']);
+});
+
+
+Route::fallback(function(){
+	// return response()->json([
+	//     'message' => 'Page Not Found. If error persists, contact info@website.com'], 404);
+	return formatResponse(404, 'Page not found or method not supported for this route.');
 });
    

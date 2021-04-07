@@ -72,6 +72,11 @@ class EventRepository extends BaseRepository
 			}
 
 			$events = json_decode(json_encode($events));
+
+			if(!$events->data){
+				return formatResponse(404, 'No events found for this user.');
+			}
+
 			$eventsWithWeather = [];
 
 			foreach($events->data as $event) {
