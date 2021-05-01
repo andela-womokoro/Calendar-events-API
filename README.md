@@ -38,9 +38,9 @@ cd calendar-event-api
 
 composer require laravel/sail --dev
 
-./vendor/bin/sail up -d
-
 alias sail='bash vendor/bin/sail'
+
+sail up -d
 
 sail composer install
 `````
