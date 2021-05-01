@@ -38,7 +38,9 @@ cd calendar-event-api
 
 composer require laravel/sail --dev
 
-./vendor/bin/sail up
+./vendor/bin/sail up -d
+
+sail composer install
 `````
 Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
 
@@ -63,8 +65,17 @@ After connecting to the database, run the application's database migrations to c
 
 ```
 sail artisan migrate
+
+sail artisan db:seed --class=DatabaseSeeder
 `````
 
+__Unit Tests__
+
+You can execute the unti tests with
+
+```
+sail artisan test
+`````
 
 ## Usage
 
