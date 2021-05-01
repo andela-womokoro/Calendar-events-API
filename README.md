@@ -40,6 +40,8 @@ composer require laravel/sail --dev
 
 ./vendor/bin/sail up -d
 
+alias sail='bash vendor/bin/sail'
+
 sail composer install
 `````
 Once the application's containers have been started, you may access the project in your web browser at: http://localhost.
