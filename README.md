@@ -73,7 +73,7 @@ sail artisan db:seed --class=DatabaseSeeder
 
 __Unit Tests__
 
-You can execute the unti tests with
+You can execute the unit tests with
 
 ```
 sail artisan test
