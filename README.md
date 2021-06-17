@@ -81,15 +81,19 @@ sail artisan test
 
 ## Usage
 
-
 __Endpoints__
 
 The API endpoints can be tested with [Postman](https://www.postman.com/downloads/) or similar tools.
 
+The API is hosted live on [wilmkr.com](http://wilmkr.com/api/users/register) where it can be tested. You can also login with the test user credentials:
+
+email: test@domain.com
+password: foobar
+
 -  Register new user
 
 ```
-POST /api/register
+POST /api/users/register
 
 Data:
 {
@@ -120,7 +124,7 @@ Response:
 
 -  User Login
 ```
-POST /api/login
+POST /api/users/login
 
 Data:
 {
@@ -142,7 +146,7 @@ Response:
 
 -  User Logout
 ```
-GET /api/logout
+GET /api/users/logout
 
 Headers:
 {
@@ -161,9 +165,9 @@ Response:
 }
 `````
 
--  Create an event
+-  Create an event for a particular user
 ```
-GET /api/events
+POST /api/users/{userId}/events
 
 Headers:
 {
@@ -197,9 +201,9 @@ Response:
 }
 `````
 
--  View single event
+-  View single event for a particular user
 ```
-GET /api/events/37
+GET /api/users/{userId}/events/37
 
 Headers:
 {
@@ -230,9 +234,9 @@ Response:
 }
 `````
 
--  View list of events
+-  View list of events for a particular user
 ```
-GET /api/events?from_date=2021-03-01&to_date=2021-03-30
+GET /api/users/{userId}/events?from_date=2021-03-01&to_date=2021-03-30
 
 Headers:
 {
@@ -337,9 +341,9 @@ Response:
 }
 `````
 
--  Update an event
+-  Update an event for a particular user
 ```
-PUT /api/events/37
+PUT /api/users/{userId}/events/37
 
 Headers:
 {
@@ -371,9 +375,9 @@ Response:
 }
 `````
 
--  Delete an event
+-  Delete an event for a particular user
 ```
-DELETE /api/events/37
+DELETE /api/users/{userId}/events/37
 
 Headers:
 {
@@ -392,7 +396,7 @@ Response:
 
 -  Invite a user to an event
 ```
-POST /api/events/41/invite
+POST /api/users/{userId}/events/41/invite
 
 Data:
 {
@@ -422,9 +426,9 @@ Response:
 }
 `````
 
--  Delete an event
+-  Delete a user invitation to an event
 ```
-DELETE /api/events/41
+DELETE /api/users/{userId}/events/41/invitations/{invitationId} 
 
 Headers:
 {
@@ -436,7 +440,7 @@ Response:
 {
     "success": true,
     "status_code": 200,
-    "message": "Event deleted",
+    "message": "Invitation deleted",
     "data": []
 }
 `````
