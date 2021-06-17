@@ -87,8 +87,10 @@ The API endpoints can be tested with [Postman](https://www.postman.com/downloads
 
 The API is hosted live on [wilmkr.com](http://wilmkr.com/api/users/register) where it can be tested. You can also login with the test user credentials:
 
+```
 email: test@domain.com
 password: foobar
+`````
 
 -  Register new user
 
